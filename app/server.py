@@ -203,11 +203,21 @@ def format_grouped_events(target_date, events_dict):
     now = datetime.now().date()
 
     if target_date == now:
-        lines = ["【今日の予定】", ""]
+        lines = ["おはようございます☀", ""]
+        lines.append("今日の予定はこちらです。")
+        lines.append("")
+        closing = "今日も良い1日になりますように。"
+        no_events_message = "今日は予定は入っていません。\n\nゆっくり過ごしてくださいね。"
     elif target_date == now + timedelta(days=1):
-        lines = ["【明日の予定】", ""]
+        lines = ["こんばんは🌙", ""]
+        lines.append("明日の予定はこちらです。")
+        lines.append("")
+        closing = "ゆっくり休んでくださいね。"
+        no_events_message = "明日の予定は入っていません。\n\nゆっくり休んでくださいね。"
     else:
         lines = [f"【{target_date.month}月{target_date.day}日の予定】", ""]
+        closing = ""
+        no_events_message = "予定はありません。"
 
     has_events = False
 
@@ -230,7 +240,10 @@ def format_grouped_events(target_date, events_dict):
             lines.append("")
 
     if not has_events:
-        lines.append("予定はありません")
+        return "\n".join(lines + [no_events_message])
+
+    if closing:
+        lines.append(closing)
 
     return "\n".join(lines)
 
