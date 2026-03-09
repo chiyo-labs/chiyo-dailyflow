@@ -103,13 +103,24 @@ def push_message(user_id: str, text: str):
     print("LINE push:", response.status_code, response.text)
 
 
-def get_calendar_service():
-    credentials = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE,
-        scopes=SCOPES
-    )
-    return build("calendar", "v3", credentials=credentials)
+import json
 
+def get_calendar_service():
+    service_account_json = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
+
+    if service_account_json:
+        info = json.loads(service_account_json)
+        credentials = service_account.Credentials.from_service_account_info(
+            info,
+            scopes=SCOPES
+        )
+    else:
+        credentials = service_account.Credentials.from_service_account_file(
+            SERVICE_ACCOUNT_FILE,
+            scopes=SCOPES
+        )
+
+    return build("calendar", "v3", credentials=credentials)
 
 def create_event_one_calendar(summary: str, start_dt: datetime, calendar_name: str):
     service = get_calendar_service()
